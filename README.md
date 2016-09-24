@@ -46,7 +46,7 @@ shutdown|system_stop.py|MQTTによるホストPCのシャットダウンを行�
 camera|camera.py|joystickによるrvizの視点移動等を行う。
 im920r|im920r.py|raspyのim920sとの通信を行う。
 agv_recv|agv_recv.py|MQTTとim920sのデータよりagvデータを生成。
-agv_ctrl|agv_ctrl.cpp/agv_hard.cpp|agvデータより左右軸とポテンショデータを生成。
+agv_ctrl|agv_ctrl.cpp/agv_hard.cpp|agvデータより左右軸とテーブル角度を生成。
 control_spawner|spawner|(ROS package)
 robot_state_publisher|state_publisher|(ROS package)
 map_server|map_server|(ROS package)
