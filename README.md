@@ -34,7 +34,7 @@ ELECOMのゲームパッドは制御基板を外し、Joystich/Switchの接点�
 
 ### 5. MQTT
 hostとraspi間の通信は5GHz Wi-Fi/MQTTと920MHz Wireless/serialで行います。
-ROSにのネットワーク通信も考えましたが、AGVはバッテリ交換時に電源が切れることと展示会場でのWi-Fiの混信を考慮したため用いませんでした。
+ROSの分散システムも考たが、AGVはバッテリ交換時に電源が切れることと展示会場でのWi-Fiの混信を考慮したため用いていない。
 メイン通信はhostで動作しているMQTTサーバで、バックアップを920MHzとしています。
 
 ### 6. ROS node
