@@ -1,0 +1,7 @@
+image: agv_map.png
+resolution: 0.0010000
+origin: [-1.500000, -1.500000, 0.000000]
+negate: 1
+occupied_thresh: 0.9
+free_thresh: 0.196
+

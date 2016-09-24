@@ -1,0 +1,92 @@
+diff -uprN /home/tf0029/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/diff_drive_controller.h /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/diff_drive_controller.h
+--- /home/tf0029/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/diff_drive_controller.h	2016-05-11 19:49:47.727104335 +0900
++++ /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/diff_drive_controller.h	2016-06-07 13:39:56.927596079 +0900
+@@ -119,6 +119,7 @@ namespace diff_drive_controller{
+     realtime_tools::RealtimeBuffer<Commands> command_;
+     Commands command_struct_;
+     ros::Subscriber sub_command_;
++    ros::Subscriber set_command_;   // by tf
+ 
+     /// Odometry related:
+     boost::shared_ptr<realtime_tools::RealtimePublisher<nav_msgs::Odometry> > odom_pub_;
+@@ -170,6 +171,7 @@ namespace diff_drive_controller{
+      * \param command Velocity command message (twist)
+      */
+     void cmdVelCallback(const geometry_msgs::Twist& command);
++    void curOdomCallback(const geometry_msgs::Pose& pose);  // by tf
+ 
+     /**
+      * \brief Get the wheel names from a wheel param
+diff -uprN /home/tf0029/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/odometry.h /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/odometry.h
+--- /home/tf0029/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/odometry.h	2016-05-11 19:49:22.411104788 +0900
++++ /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/include/diff_drive_controller/odometry.h	2016-06-07 11:06:39.575712359 +0900
+@@ -139,6 +139,8 @@ namespace diff_drive_controller
+       return angular_;
+     }
+ 
++    void setPos(double x, double y, double heading);    // by tf
++
+     /**
+      * \brief Sets the wheel parameters: radius and separation
+      * \param wheel_separation Seperation between left and right wheels [m]
+diff -uprN /home/tf0029/src/ros_controllers/diff_drive_controller/src/diff_drive_controller.cpp /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/src/diff_drive_controller.cpp
+--- /home/tf0029/src/ros_controllers/diff_drive_controller/src/diff_drive_controller.cpp	2016-05-11 19:49:47.727104335 +0900
++++ /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/src/diff_drive_controller.cpp	2016-09-24 12:53:40.510298388 +0900
+@@ -252,6 +252,7 @@ namespace diff_drive_controller{
+     }
+ 
+     sub_command_ = controller_nh.subscribe("cmd_vel", 1, &DiffDriveController::cmdVelCallback, this);
++    set_command_ = controller_nh.subscribe("cur_odom", 1, &DiffDriveController::curOdomCallback, this); // by tf
+ 
+     return true;
+   }
+@@ -407,6 +408,23 @@ namespace diff_drive_controller{
+     }
+   }
+ 
++  void DiffDriveController::curOdomCallback(const geometry_msgs::Pose& pose)    // by tf
++  {
++    if (isRunning())
++    {
++      odometry_.setPos(pose.position.x, pose.position.y, pose.orientation.z);
++      ROS_DEBUG_STREAM_NAMED(name_,
++                             "Set current position. "
++                             << "x: "   << pose.position.x << ", "
++                             << "y: "   << pose.position.y << ", "
++                             << "heading: " << pose.orientation.z);
++    }
++    else
++    {
++      ROS_ERROR_NAMED(name_, "Can't accept current position. Controller is not running.");
++    }
++  }
++
+   bool DiffDriveController::getWheelNames(ros::NodeHandle& controller_nh,
+                               const std::string& wheel_param,
+                               std::vector<std::string>& wheel_names)
+diff -uprN /home/tf0029/src/ros_controllers/diff_drive_controller/src/odometry.cpp /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/src/odometry.cpp
+--- /home/tf0029/src/ros_controllers/diff_drive_controller/src/odometry.cpp	2016-05-11 19:49:22.411104788 +0900
++++ /home/tf0029/catkin_ws/src/ros_controllers/diff_drive_controller/src/odometry.cpp	2016-06-07 11:24:44.759698640 +0900
+@@ -42,6 +42,7 @@
+ #include <diff_drive_controller/odometry.h>
+ 
+ #include <boost/bind.hpp>
++#include <ros/ros.h>
+ 
+ namespace diff_drive_controller
+ {
+@@ -163,6 +164,14 @@ namespace diff_drive_controller
+       x_       +=  r * (sin(heading_) - sin(heading_old));
+       y_       += -r * (cos(heading_) - cos(heading_old));
+     }
++    //ROS_INFO("[%f : %f : %f]", x_, y_, heading_);
++  }
++
++  void Odometry::setPos(double x, double y, double heading)    // by tf
++  {
++      x_ = x;
++      y_ = y;
++      heading_ = heading;
+   }
+ 
+   void Odometry::resetAccumulators()

@@ -1,0 +1,29 @@
+<launch>
+    <!-- Load the URDF/Xacro model of our robot -->
+    <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find m34_agv_host)/urdf/agv.xacro'" />
+    <param name="robot_description" command="$(arg urdf_file)" />
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find m34_agv_host)/config/agv.yaml" command="load"/> 
+
+    <!-- Load Node -->
+    <node name="arduino"               pkg="rosserial_python"      type="serial_node.py"   args="_port:=/dev/arduino"/>
+    <node name="shutdown"              pkg="m34_agv_host"          type="system_stop.py"/>
+    <node name="camera"                pkg="m34_agv_host"          type="camera.py"/>
+    <node name="im920r"                pkg="m34_agv_host"          type="im920r.py"/>
+    <node name="agv_recv"              pkg="m34_agv_host"          type="agv_recv.py"/>
+    <node name="agv_ctrl"              pkg="m34_agv_host"          type="agv_ctrl"/>
+    <node name="control_spawner"       pkg="controller_manager"    type="spawner"          respawn="false" args="agv joint_state_controller"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+    <!-- Show Map -->
+    <arg name="map" default="map.yaml" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find m34_agv_host)/maps/$(arg map)"/>
+    <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 100" />
+
+    <!-- Show in Rviz   -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find m34_agv_host)/urdf.rviz">
+        <remap from="/odom" to="/agv/odom"/>
+    </node>
+
+</launch>

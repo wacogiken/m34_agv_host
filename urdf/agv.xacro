@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<robot name="box_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+   <!-- Include all component files -->
+   <xacro:include filename="$(find m34_agv_host)/urdf/materials.urdf.xacro" />
+   <xacro:include filename="$(find m34_agv_host)/urdf/base.urdf.xacro" />
+ 
+   
+   <!-- Add the base and wheels -->
+   <base name="base" color="Black"/>
+
+</robot>
+
+

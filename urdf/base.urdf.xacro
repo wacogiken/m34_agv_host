@@ -1,0 +1,332 @@
+<?xml version="1.0"?>
+
+<robot name="base" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Define a number of dimensions using properties -->
+  <property name="wheel_length" value="0.040" />
+  <property name="wheel_radius" value="0.067" />
+
+  <property name="base_mesh_scale" value="0.001" />
+  
+  <property name="PI" value="3.1415" />
+     
+  <!-- footprint -->
+  <link name="base_footprint">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.05 0.05 0.001" />
+        </geometry>
+        <material name="TransparentGreen" />
+      </visual>
+  </link>
+  
+  <joint name="base_joint" type="fixed">
+      <origin xyz="0 0 0.18" rpy="0 0 ${-PI/2}" />
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+  </joint>
+
+  <!-- base truck -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/base.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Grey" />
+    </visual>
+  </link>
+
+  <!-- motor -->
+  <joint name="motor_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="motor_link" />
+  </joint>
+
+  <link name="motor_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/motor.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Yellow" />
+    </visual>
+  </link>
+
+  <!-- left wheel -->
+  <joint name="base_l_wheel_joint" type="continuous">
+    <axis xyz="-1 0 0" />
+    <limit effort="100" velocity="100"/>
+    <safety_controller k_velocity="10" />
+    <origin xyz="0 0 -0.115" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="base_l_wheel_link"/>
+  </joint>
+  <link name="base_l_wheel_link">
+    <visual>
+        <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+          <mesh filename="package://m34_agv_host/meshes/wheelL.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Yellow" />
+    </visual>
+    <collision>
+        <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- left tire -->
+  <joint name="tireL_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_l_wheel_link"/>
+    <child link="tireL_link" />
+  </joint>
+
+  <link name="tireL_link">
+    <visual>
+      <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tireL.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="DarkGrey" />
+    </visual>
+  </link>
+
+  <!-- right wheel -->
+  <joint name="base_r_wheel_joint" type="continuous">
+    <axis xyz="-1 0 0" />
+    <limit effort="100" velocity="100"/>
+    <safety_controller k_velocity="10" />
+    <origin xyz="0 0 -0.115" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="base_r_wheel_link"/>
+  </joint>
+  <link name="base_r_wheel_link">
+    <visual>
+        <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+          <mesh filename="package://m34_agv_host/meshes/wheelR.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Yellow" />
+    </visual>
+    <collision>
+        <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- right tire -->
+  <joint name="tireR_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_r_wheel_link"/>
+    <child link="tireR_link" />
+  </joint>
+
+  <link name="tireR_link">
+    <visual>
+      <origin xyz="0 0 0.115" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tireR.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="DarkGrey" />
+    </visual>
+  </link>
+
+  <!-- brake -->
+  <joint name="brake_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="brake_link" />
+  </joint>
+
+  <link name="brake_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/brake.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="SkyBlue" />
+    </visual>
+  </link>
+
+  <!-- sensor -->
+  <joint name="sensor_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="sensor_link" />
+  </joint>
+
+  <link name="sensor_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/sensor.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Red" />
+    </visual>
+  </link>
+
+  <!-- table -->
+  <joint name="table_joint" type="revolute">
+    <axis xyz="0 0 1" />
+    <limit lower="-3.1415" upper="3.1415" effort="100" velocity="100"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="table_link" />
+  </joint>
+
+  <link name="table_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/table.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Grey" />
+    </visual>
+  </link>
+
+  <!-- battery -->
+  <joint name="battery_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="table_link"/>
+    <child link="battery_link" />
+  </joint>
+
+  <link name="battery_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/battery.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="LightGreen" />
+    </visual>
+  </link>
+
+  <!-- tableGrey -->
+  <joint name="tableGrey_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="table_link"/>
+    <child link="tableGrey_link" />
+  </joint>
+
+  <link name="tableGrey_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tableGrey.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="DarkGrey" />
+    </visual>
+  </link>
+
+  <!-- tableBlue -->
+  <joint name="tableBlue_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="table_link"/>
+    <child link="tableBlue_link" />
+  </joint>
+
+  <link name="tableBlue_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tableBlue.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Blue" />
+    </visual>
+  </link>
+
+  <!-- tableRed -->
+  <joint name="tableRed_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="table_link"/>
+    <child link="tableRed_link" />
+  </joint>
+
+  <link name="tableRed_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tableRed.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Red" />
+    </visual>
+  </link>
+
+  <!-- tableYellow -->
+  <joint name="tableYellow_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="table_link"/>
+    <child link="tableYellow_link" />
+  </joint>
+
+  <link name="tableYellow_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/tableYellow.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="Yellow" />
+    </visual>
+  </link>
+
+  <!-- abh3 -->
+  <joint name="driver_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="driver_link" />
+  </joint>
+
+  <link name="driver_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://m34_agv_host/meshes/driver.stl" scale="${base_mesh_scale} ${base_mesh_scale} ${base_mesh_scale}"/>
+      </geometry>
+      <material name="LightGreen" />
+    </visual>
+  </link>
+
+  <!-- transmission -->
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_l_wheel_joint">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_motor">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_r_wheel_joint">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_motor">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="table_joint">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="middle_motor">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
+
