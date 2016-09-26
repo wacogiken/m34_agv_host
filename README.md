@@ -22,22 +22,22 @@ joystick|ELECOM JC-AS01BK(改) + Arduino UNO
 
 ### 3. package & Patch
 * ros_controllers/diff_drive_controller  
-  走行／旋回と左右軸の変換に使用しています。  
-  現在位置(odometry)を設定するためにパッチを当てています。  
+  走行／旋回と左右軸の変換に使用している。  
+  現在位置(odometry)を設定するためにパッチを当てている。  
   バージョンは0.9.3(2016-02-12)
 * jsk_visualization_packages  
-  オーバレイ波形表示とアイコン表示に使用しています。  
-  現在(2016_09_24)はjsk_visualizationですが動作は未確認です。
+  オーバレイ波形表示とアイコン表示に使用している。  
+  現在(2016_09_24)はjsk_visualizationですが動作は未確認。
 
 ### 4. Arduino  
-ELECOMのゲームパッドは制御基板を外し、Joystich/Switchの接点をArduino UNOの入力に接続しています。
+ELECOMのゲームパッドは制御基板を外し、Joystich/Switchの接点をArduino UNOの入力に接続している。
 
 ### 5. MQTT
-hostとraspi間の通信は5GHz Wi-Fi/MQTTと920MHz Wireless/serialで行います。
-ROSの分散システムも考たが、AGVはバッテリ交換時に電源が切れることと展示会場でのWi-Fiの混信を考慮したため用いていない。
-メイン通信はhostで動作しているMQTTサーバで、バックアップを920MHzとしています。
+hostとraspi間の通信は5GHz Wi-Fi/MQTTと920MHz Wireless/serialで行う。
+ROSの分散システムも考えたが、AGVはバッテリ交換時に電源が切れることと展示会場でのWi-Fiの混信を懸念し用いていない。
+メイン通信はhostで動作しているMQTTサーバで、バックアップを920MHzとしている。
 
-実機AGV無しで動かす場合、arduinoとim920rのノードを起動せず、MQTTサーバへ以下のトピックを発行し続ければ可能と思います。
+実機AGV無しで動かす場合、arduinoとim920rのノードを起動せず、MQTTサーバへ以下のトピックを発行し続ければ可能と思う。
 
 topic: /agv  
 message: 走行速度[min-1]:旋回速度[min-1]:電圧[V]:番地(0～33):角度[0.1deg]
