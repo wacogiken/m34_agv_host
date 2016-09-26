@@ -37,7 +37,7 @@ hostとraspi間の通信は5GHz Wi-Fi/MQTTと920MHz Wireless/serialで行いま�
 ROSの分散システムも考たが、AGVはバッテリ交換時に電源が切れることと展示会場でのWi-Fiの混信を考慮したため用いていない。
 メイン通信はhostで動作しているMQTTサーバで、バックアップを920MHzとしています。
 
-実機AGV無しで動かす場合は、arduinoとim920rのノードを起動せず、MQTTサーバへ以下のトピックを発行し続ければ可能と思います。
+実機AGV無しで動かす場合、arduinoとim920rのノードを起動せず、MQTTサーバへ以下のトピックを発行し続ければ可能と思います。
 
 topic: /agv  
 message: 走行速度[min-1]:旋回速度[min-1]:電圧[V]:番地(0～33):角度[0.1deg]
