@@ -4,6 +4,8 @@
 
 ![agv](img/agv.jpg)
 
+![screen](img/screen.png)
+
 ### 1. hardware
 
 種別|品名
